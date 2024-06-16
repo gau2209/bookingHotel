@@ -38,7 +38,7 @@ const AddRoom = () => {
         try {
             const success = await addRoom(newRoom.photo, newRoom.roomType, newRoom.roomPrice)
             if (success !== undefined) {
-                setMessage("adding successfully")
+                setMessage("Adding successfully")
                 setNewRoom({ photo: null, roomType: "", roomPrice: "" })
             } else
                 setErrMessage("error adding room")
@@ -47,7 +47,6 @@ const AddRoom = () => {
         }
     }
 
-console.log(newRoom.roomType)
 
     return (
         <>
@@ -55,6 +54,11 @@ console.log(newRoom.roomType)
                 <div className="row justify-content-center">
                     <div className="col-md-8 col-lg-6">
                         <h2 className="mt-5 mb-2">Add a new room</h2>
+                        {message && (
+							<div className="alert alert-success fade show"> {message}</div>
+						)}
+
+						{errMessage && <div className="alert alert-danger fade show"> {errMessage}</div>}
                         <form >
 
                             <div className="mb-3">

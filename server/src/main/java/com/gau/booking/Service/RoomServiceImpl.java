@@ -1,6 +1,7 @@
 package com.gau.booking.Service;
 
 import com.gau.booking.Entity.Room;
+import com.gau.booking.Exception.ResourceNotFoundException;
 import com.gau.booking.Repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class RoomServiceImpl implements IRoom {
         Room room = new Room();
         room.setRoomType(roomType);
         room.setRoomPrice(roomPrice);
-        if(!file.isEmpty()){
+        if (!file.isEmpty()) {
             byte[] photoBytes = file.getBytes();
             Blob photoBlob = new SerialBlob(photoBytes);
             room.setPhoto(photoBlob);
@@ -37,22 +38,40 @@ public class RoomServiceImpl implements IRoom {
         return roomRepository.findDistinctRoomTypes();
     }
 
-    public List<Room> getAllRooms(){
+    public List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
 
     @Override
     public byte[] getRoomPhotoByRoomId(Long roomId) throws SQLException {
         Optional<Room> room = roomRepository.findById(roomId);
-        if(room.isEmpty()){
-            throw new IllegalArgumentException("Room not found");
-        }
-        else{
+        if (room.isEmpty()) {
+            throw new ResourceNotFoundException("Room not found");
+        } else {
             Blob photoBlob = room.get().getPhoto();
-            if(photoBlob != null){
+            if (photoBlob != null) {
                 return photoBlob.getBytes(1L, (int) photoBlob.length());
             }
         }
         return new byte[0];
     }
+
+    @Override
+    public void deleRoom(Long roomId) {
+        Optional<Room> room = roomRepository.findById(roomId);
+        if (room.isEmpty()) {
+            throw new ResourceNotFoundException("Room not found");
+        } else {
+            roomRepository.deleteById(roomId);
+        }
+    }
+
+    @Override
+    public Optional<Room> getRoomById(Long roomId) {
+        return Optional.of(roomRepository.findById(roomId).get());
+    }
+
+
+
 }
+

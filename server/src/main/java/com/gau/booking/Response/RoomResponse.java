@@ -24,12 +24,11 @@ public class RoomResponse {
     }
 
     public RoomResponse(Long id, String roomType, BigDecimal roomPrice,
-                        boolean isBooked, List<BookedRoomResponse> bookedRooms, byte[] photoBytes) {
+                        boolean isBooked, byte[] photoBytes) {
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
         this.isBooked = isBooked;
-        this.bookedRooms = bookedRooms;
         this.photo = photoBytes != null ? Base64.encodeBase64String(photoBytes) : null;
     }
 }
