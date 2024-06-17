@@ -26,12 +26,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/rooms")
 public class RoomController {
-    private final IBookedRoom bookedRoomService;
     private final IRoom roomService;
 
     @PostMapping("/add/new-room")
+    @CrossOrigin
     public ResponseEntity<RoomResponse> addNewRoom(
-            @RequestParam("photo") MultipartFile photo,
+             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
             @RequestParam("roomPrice") BigDecimal roomPrice) throws SQLException, IOException {
         Room savedRoom = this.roomService.addNewRoom(photo, roomType, roomPrice);
@@ -83,7 +83,7 @@ public class RoomController {
 
 
     private RoomResponse getRoomResponse(Room room) {
-        List<BookedRoom> booking = getAllBookingByRoomId(room.getId());
+//        List<BookedRoom> booking = getAllBookingByRoomId(room.getId());
 //        List<BookedRoomResponse> bookingres = booking.stream().map(
 //                booked -> new BookedRoomResponse(booked.getBookingId(),
 //                        booked.getCheckInDate(), booked.getCheckOutDate(), booked.getBookingConfirmationCode())
@@ -100,9 +100,9 @@ public class RoomController {
         return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(),room.isBooked(),photoBytes);
     }
 
-    private List<BookedRoom> getAllBookingByRoomId(Long roomId) {
-        return bookedRoomService.getAllBookingByRoomId(roomId);
-    }
+//    private List<BookedRoom> getAllBookingByRoomId(Long roomId) {
+//        return bookedRoomService.getAllBookingByRoomId(roomId);
+//    }
 
 
 

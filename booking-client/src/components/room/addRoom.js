@@ -36,10 +36,12 @@ const AddRoom = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const success = await addRoom(newRoom.photo, newRoom.roomType, newRoom.roomPrice)
-            if (success !== undefined) {
+            const res = await addRoom(newRoom.photo, newRoom.roomType, newRoom.roomPrice)
+            if (res !== undefined) {
                 setMessage("Adding successfully")
                 setNewRoom({ photo: null, roomType: "", roomPrice: "" })
+                setImagePreview("")
+				setErrMessage("")
             } else
                 setErrMessage("error adding room")
         } catch (error) {
@@ -47,6 +49,7 @@ const AddRoom = () => {
         }
     }
 
+console.log(newRoom)
 
     return (
         <>
@@ -59,7 +62,7 @@ const AddRoom = () => {
 						)}
 
 						{errMessage && <div className="alert alert-danger fade show"> {errMessage}</div>}
-                        <form >
+                        <form onSubmit={handleSubmit} >
 
                             <div className="mb-3">
                                 <label htmlFor="roomType" className="form-label"  >
@@ -102,7 +105,7 @@ const AddRoom = () => {
 
 
                             <div className="d-grid d-md-flex mt-2">
-                                <button type="submit" className="btn btn-outline-primary ml-5" onSubmit={handleSubmit}>Save Room</button>
+                                <button type="submit" className="btn btn-outline-primary ml-5" >Save Room</button>
                             </div>
 
 
