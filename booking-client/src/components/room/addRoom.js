@@ -32,15 +32,15 @@ const AddRoom = () => {
         setImagePreview(URL.createObjectURL(selectedImage))
     }
 
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const res = await addRoom(newRoom.photo, newRoom.roomType, newRoom.roomPrice)
             if (res !== undefined) {
                 setMessage("Adding successfully")
-                setNewRoom({ photo: null, roomType: "", roomPrice: "" })
-                setImagePreview("")
+                setNewRoom({ photo: "", roomType: "", roomPrice: "" })
+                setImagePreview(null)
 				setErrMessage("")
             } else
                 setErrMessage("error adding room")
@@ -50,6 +50,7 @@ const AddRoom = () => {
     }
 
 console.log(newRoom)
+console.log("image: ",imagePreview)
 
     return (
         <>
@@ -95,6 +96,7 @@ console.log(newRoom)
                                     required id="photo"
                                     name="photo"
                                     onChange={handleImage} />
+                                    
                                 {imagePreview && (
                                     <img src={imagePreview}
                                         className="mb-3"

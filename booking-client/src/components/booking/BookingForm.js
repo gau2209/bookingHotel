@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react"
-import { getRoomById } from "../utils/APIConfig"
+import { bookRoom, getRoomById } from "../utils/APIConfig"
 import { useNavigate, useParams } from "react-router-dom"
 import moment from "moment"
+import { Form, FormControl } from "react-bootstrap"
+import BookingSummary from "./BookingSummary"
 
 const BookingForm = () => {
     const [isValidated, setIsValidated] = useState(false)
-    const [summited, setIsSummited] = useState(false)
+    const [isSubmited, setIsSubmited] = useState(false)
     const [errMessage, setErrMessage] = useState("")
     const [roomPrice, setRoomPrice] = useState(0)
     const { roomId } = useParams()
     const nav = useNavigate()
-    const [roomInfo, setRoomInfo] = useState({
-        photo: "",
-        roomType: "",
-        roomPrice: "",
-    })
 
     const [booking, setBooking] = useState({
         guestName: "",
@@ -22,17 +19,17 @@ const BookingForm = () => {
         checkInDate: "",
         checkOutDate: "",
         numberOfAdults: "",
-        numberOfChildren: "",
+        numberOfChildren: 0,
     })
 
     function handleInputChange(e) {
-        const { name, value } = e.target.value
+        const { name, value } = e.target
         setBooking({ ...booking, [name]: value })
         setErrMessage("")
     }
 
     useEffect(() => {
-        const getRoomPriceById = async (roomId) => {
+        const getRoomPriceById = async () => {
             try {
                 const res = await getRoomById(roomId)
                 setRoomPrice(res.roomPrice)
@@ -43,11 +40,11 @@ const BookingForm = () => {
         getRoomPriceById();
     }, [roomId])
 
-    function isGuestValid() {
-        const adultsCount = parseInt(booking.numberOfAdults)
+    const isGuestValid = () => {
+        const adultCount = parseInt(booking.numberOfAdults)
         const childrenCount = parseInt(booking.numberOfChildren)
-        const totalGuest = adultsCount + childrenCount
-        return totalGuest >= 1 && adultsCount >= 1
+        const totalCount = adultCount + childrenCount
+        return totalCount >= 1 && adultCount >= 1
     }
 
     function isCheckOutDateValid() {
@@ -64,41 +61,152 @@ const BookingForm = () => {
     const calculatePayment = () => {
         const checkInDate = moment(booking.checkInDate)
         const checkOutDate = moment(booking.checkOutDate)
-        const diffInDays = checkOutDate.diff(checkInDate)
+        const diffInDays = checkOutDate.diff(checkInDate,"days")
         const paymentPricePerDay = roomPrice ? roomPrice : 0
+        console.log("checkInDate: ",checkInDate,
+        "checkOutDate: ",checkOutDate,
+        "diffInDays: ",diffInDays,
+        "paymentPricePerDay: ",paymentPricePerDay,
+        "total: ",diffInDays*paymentPricePerDay
+        )
+        // console.log("checkOutDate: ",checkOutDate)
+        // console.log("diffInDays: ",diffInDays)
+        // console.log("paymentPricePerDay: ",paymentPricePerDay)
+        // console.log("total: ",diffInDays*paymentPricePerDay)
+        
         return diffInDays * paymentPricePerDay
+        
 
         // const day = checkOutDate - checkInDate
         // return roomPrice * day;
     }
 
-    const handleSummit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         const form = e.currentTarget
         if (form.checkValidity() === false || !isGuestValid() || !isCheckOutDateValid()) {
             e.stopPropagation()
         } else {
-            setIsSummited(true)
+            setIsSubmited(true)
         }
         setIsValidated(true)
     }
 
-    const handleBooking = async() =>{
+    const handleBooking = async () => {
         try {
-            const confirmMationCode = await bookRoom(roomId,booking)
-            setIsSummited(true)
-            nav("/",{state:{message: confirmMationCode}})
+            const confirmMationCode = await bookRoom(roomId, booking)
+            setIsSubmited(true)
+            nav("/booking-succes", { state: { message: confirmMationCode } })
         } catch (error) {
             setErrMessage(error.message)
-            nav("/",{state:{error: errMessage}})
+            nav("/booking-succes", { state: { error: errMessage } })
         }
     }
 
     return (
         <>
-            <div>
+            <div className="container mb-5">
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="card card-body mt-5">
+                            <h4 className="card card-title">Reserve Room</h4>
+                            <Form noValidate validated={isValidated} onSubmit={handleSubmit}>
 
+                                <Form.Group >
+                                    <Form.Label htmlFor="guestName">Full Name:</Form.Label>
+                                    <FormControl required type="text" id="guestName" name="guestName" value={booking.guestName} placeholder="Enter Your full name" onChange={handleInputChange} />
+                                    <Form.Control.Feedback type="invalid">
+                                        Please enter your full name
+                                    </Form.Control.Feedback>
+                                </Form.Group>
 
+                                <Form.Group >
+                                    <Form.Label htmlFor="guestEmail">Email:</Form.Label>
+                                    <FormControl required type="email" id="guestEmail" name="guestEmail" value={booking.guestEmail} placeholder="Enter Your Email" onChange={handleInputChange} />
+                                    <Form.Control.Feedback type="invalid">
+                                        Please enter your email
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+
+                                <fieldset style={{ border: "2px" }}>
+                                    <legend>Lodging period</legend>
+                                    <div className="row">
+
+                                        <div className="col-6">
+                                            <Form.Label htmlFor="checkInDate">Check-In Date:</Form.Label>
+                                            <FormControl required type="date"
+                                                id="checkInDate" name="checkInDate"
+                                                value={booking.checkInDate}
+                                                placeholder="Check-In Date"
+                                                onChange={handleInputChange} />
+
+                                            <Form.Control.Feedback type="invalid">
+                                                Please select a check-in date
+                                            </Form.Control.Feedback>
+                                        </div>
+
+                                        <div className="col-6">
+                                            <Form.Label htmlFor="checkOutDate">Check-Out Date:</Form.Label>
+                                            <FormControl required type="date" id="checkOutDate"
+                                                name="checkOutDate"
+                                                value={booking.checkOutDate}
+                                                placeholder="Check-Out Date"
+                                                onChange={handleInputChange} />
+                                            <Form.Control.Feedback type="invalid">
+                                                Please select a check-out date
+                                            </Form.Control.Feedback>
+                                        </div>
+                                        {errMessage && <p className="error-message text-danger">{errMessage}</p>}
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend className="">Number of guests</legend>
+                                    <div className="row">
+
+                                        <div className="col-6">
+                                            <Form.Label htmlFor="numberOfAdults">Adults: </Form.Label>
+                                            <FormControl required type="number"
+                                                id="numberOfAdults" name="numberOfAdults"
+                                                value={booking.numberOfAdults}
+                                                placeholder="0" min={1}
+                                                onChange={handleInputChange} />
+                                            <Form.Control.Feedback type="invalid">
+                                                Please select at least 1 adult.
+                                            </Form.Control.Feedback>
+                                        </div>
+
+                                        <div className="col-6">
+                                            <Form.Label htmlFor="numberOfChildren">Children: </Form.Label>
+                                            <FormControl type="number"
+                                                id="numberOfChildren"
+                                                name="numberOfChildren"
+                                                value={booking.numberOfChildren}
+                                                min={0}
+                                                defaultValue={0}
+                                                placeholder="0"
+                                                onChange={handleInputChange} />
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+
+                                <div className="form-group mt-2 mb-2">
+                                    <button type="submit" className="btn btn-danger">Continue</button>
+                                </div>
+                            </Form>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        {isSubmited && (
+                            <BookingSummary booking={booking}
+                                isFormValid={isValidated}
+                                onConfirm={handleBooking}
+                                payment={calculatePayment()} />
+                        )}
+
+                    </div>
+                </div>
             </div>
         </>
     )

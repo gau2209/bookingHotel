@@ -10,7 +10,8 @@ import NavBar from './layout/navbar';
 import Footer from './layout/Footer';
 import RoomListting from './components/room/RoomListing';
 import Admin from './components/admin/Admin'
-import HotelService from './components/common/HotelService';
+import CheckOut from './components/booking/Checkout';
+import BookingSuccess from"./components/booking/BookingSuccess";
 
 function App() {
   return (
@@ -27,8 +28,11 @@ function App() {
             {/* Admin */}
             <Route path='/admin' element={<Admin />} />
 
-            {/* Service */}
-            <Route path='/service' element={<HotelService/>}/>
+            <Route path='/book-room/:roomId' element={<CheckOut/>}/>
+            <Route path='"/booking-succes"' element={<BookingSuccess/>}/>
+
+
+
           </Routes>
         </Router>
         <Footer />
