@@ -9,6 +9,10 @@ function Admin() {
                 <Link to={"/add-room"}>
                     Manage room
                 </Link>
+
+                <Link to={"/existing-rooms"} className="btn btn-danger">
+                Existing rooms
+                </Link>
             </section>
         </>
     )

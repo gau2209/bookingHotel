@@ -12,8 +12,16 @@ import RoomListting from './components/room/RoomListing';
 import Admin from './components/admin/Admin'
 import CheckOut from './components/booking/Checkout';
 import BookingSuccess from"./components/booking/BookingSuccess";
+import { useEffect } from 'react';
+import GetRoom from './components/room/getRoom';
+
 
 function App() {
+
+  useEffect(() => {
+    document.title = 'My booking app';
+  }, []);
+
   return (
     <>
       <main>
@@ -24,12 +32,13 @@ function App() {
             <Route path="/edit-room/:roomId" element={<EditRoom />} />
             <Route path="/existing-rooms" element={<ExistingRooms />} />
             <Route path="/add-room" element={<AddRoom />} />
+            {/* <Route path='/get-room/:roomId' element={<GetRoom/>}/> */}
             <Route path="/browse-all-rooms" element={<RoomListting />} />
             {/* Admin */}
             <Route path='/admin' element={<Admin />} />
 
-            <Route path='/book-room/:roomId' element={<CheckOut/>}/>
-            <Route path='"/booking-succes"' element={<BookingSuccess/>}/>
+            <Route path='/book-room/:roomId' element={<GetRoom/>}/>
+            <Route path='/booking-success' element={<BookingSuccess/>}/>
 
 
 

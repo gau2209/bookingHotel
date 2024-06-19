@@ -54,7 +54,6 @@ const EditRoom = () => {
 				setErrorMessage("Error updating room")
 			}
 		} catch (error) {
-			console.error(error)
 			setErrorMessage(error.message)
 		}
 	}

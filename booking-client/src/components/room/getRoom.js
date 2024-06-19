@@ -6,7 +6,6 @@ import Spinner from "../../layout/Spinner"
 import { FaCar, FaTv, FaUtensils, FaWifi } from "react-icons/fa6"
 import { FaParking, FaTshirt, FaWineGlassAlt } from "react-icons/fa"
 import RoomCarousel from "../common/RoomCarousel"
-import { Table } from "react-bootstrap"
 
 function CheckOut() {
     const [error, setError] = useState("")
@@ -29,6 +28,8 @@ function CheckOut() {
             })
         }, 2000)
     }, [roomId])
+
+    console.log(roomInfo)
 
     return (
         <>

@@ -4,11 +4,11 @@ import { NavLink, Link } from "react-router-dom"
 
 
 const NavBar = () => {
-	const [showAccount, setShowAccount] = useState(false)
+	// const [showAccount, setShowAccount] = useState(false)
 
-	const handleAccountClick = () => {
-		setShowAccount(!showAccount)
-	}
+	// const handleAccountClick = () => {
+	// 	setShowAccount(!showAccount)
+	// }
 
 	// const isLoggedIn = localStorage.getItem("token")
 	// const userRole = localStorage.getItem("userRole")
@@ -46,48 +46,35 @@ const NavBar = () => {
 								</NavLink>
 							</li>
 						)} */}
-                        
-							<li className="nav-item">
-								<NavLink className="nav-link" aria-current="page" to={"/admin"}>
-									Admin
-								</NavLink>
-							</li>
-						
+
+						<li className="nav-item">
+							<NavLink className="nav-link" aria-current="page" to={"/admin"}>
+								Admin
+							</NavLink>
+						</li>
+
 					</ul>
 
 					<ul className="d-flex navbar-nav">
 						<li className="nav-item">
-							<NavLink className="nav-link" to={""}>
+							<NavLink className="nav-link" to={"/"}>
 								Find my booking
 							</NavLink>
 						</li>
-
-						<li className="nav-item dropdown">
-							<a
-								className={`nav-link dropdown-toggle ${showAccount ? "show" : ""}`}
-								href="#"
-								role="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false"
-								onClick={handleAccountClick}>
-								{" "}
-								Account
-							</a>
-                            <ul>
-                                <li>
-                                    <Link to={"/login"} className="dropdown-item">Login</Link>
-                                </li>
-
-                                <li>
-                                    <Link to={"/profile"} className="dropdown-item">Profile</Link>
-                                </li>
-
-                                <li>
-                                    <Link to={"/logout"} className="dropdown-item">Logout</Link>
-                                </li>
-                            </ul>
-                        </li>
 					</ul>
+
+					<div class="dropdown">
+						<a class="btn btn-info dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Account
+						</a>
+
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="#">Login</a></li>
+							<li><a class="dropdown-item" href="#">Profile</a></li>
+							<hr/>
+							<li><a class="dropdown-item" href="#">Logout</a></li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</nav>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { deleteRoom, getAllRoom } from "../utils/APIConfig"
-import { Col, Row } from "react-bootstrap"
+import { Col, Row, Table } from "react-bootstrap"
 import RoomFilter from "../common/RoomFilter"
 import RoomPaginator from "../common/RoomPaginator"
 import { FaEdit, FaEye, FaPlus, FaTrashAlt } from "react-icons/fa"
@@ -46,7 +46,7 @@ const ExistingRooms = () => {
 		setCurrentPage(pageNumber)
 	}
 
-	console.log(rooms)
+
 	const handleDelete = async (roomId) => {
 		try {
 			const result = await deleteRoom(roomId)
@@ -103,7 +103,7 @@ const ExistingRooms = () => {
 							</Col>
 						</Row>
 
-						<table class="table-danger">
+						<Table >
 							<thead>
 								<tr style={{textAlign:"center"}}>
 									<th>ID</th>
@@ -120,16 +120,20 @@ const ExistingRooms = () => {
 										<td>{room.roomType}</td>
 										<td>{room.roomPrice}</td>
 										<td className="gap-2">
-											<Link to={`/get-room/${room.id}`} className="gap-2">
-												<span className="btn btn-info btn-sm">
+											<Link to={`/get-room/${room.id}`} >
+												<span style={{marginLeft:"100px"}} className="btn btn-info btn-sm">
 													<FaEye />
 												</span>
 
+											</Link>
+
+											<Link to={`/edit-room/${room.id}`} >
 												<span className="btn btn-warning btn-sm ml-5">
 													<FaEdit />
 												</span>
 
 											</Link>
+
 											<button
 												className="btn btn-danger btn-sm ml-5"
 												onClick={() => handleDelete(room.id)}>
@@ -139,7 +143,7 @@ const ExistingRooms = () => {
 									</tr>
 								))}
 							</tbody>
-						</table>
+						</Table>
 						<RoomPaginator
 							currentPage={currentPage}
 							totalPages={calculateTotalPages(filteredRooms, roomsPerPage, rooms)}

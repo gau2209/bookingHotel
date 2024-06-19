@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@CrossOrigin("http://localhost:3006")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/booked")
@@ -28,7 +30,7 @@ public class BookedRoomController {
     private final IRoom roomService;
 
     @GetMapping("/all-booked")
-    @CrossOrigin
+
     public ResponseEntity<List<BookedRoomResponse>> getAllBooked() {
         List<BookedRoom> bookeds = bookedService.getAllBookedRooms();
         List<BookedRoomResponse> bookedRoomResponses = new ArrayList<>();
@@ -40,28 +42,32 @@ public class BookedRoomController {
     }
 
     @GetMapping("/confirmationCode/{confirmationCode}")
+
     public ResponseEntity<?> getBookingByConfirmationCode(@PathVariable String confirmationCode) {
         try {
             BookedRoom booked = bookedService.findByBookedConfirmationCode(confirmationCode);
             BookedRoomResponse bookedRoomResponse = getBookedResponse(booked);
             return ResponseEntity.ok(bookedRoomResponse);
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-@PostMapping("/room/{roomId}/booking")
+    @PostMapping("/room/{roomId}/booking")
+
     public ResponseEntity<?> saveBookedRoom(@PathVariable Long roomId,
                                             @RequestBody BookedRoom bookedRoomRequest) {
         try {
             String confirmationCode = this.bookedService.saveBooked(roomId, bookedRoomRequest);
             return ResponseEntity.ok("Room booked successfully, Your booking confirmation code is : " + confirmationCode);
         } catch (InvalidBookingRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-@DeleteMapping("/{bookingId}/delete")
-    public void cancelBooking(@PathVariable Long bookingId){
+
+    @DeleteMapping("/{bookingId}/delete")
+
+    public void cancelBooking(@PathVariable Long bookingId) {
         this.bookedService.cancelBooking(bookingId);
     }
 

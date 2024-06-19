@@ -1,11 +1,9 @@
 package com.gau.booking.Controller;
 
-import com.gau.booking.Entity.BookedRoom;
 import com.gau.booking.Entity.Room;
 import com.gau.booking.Exception.PhotoRetrievalException;
 import com.gau.booking.Exception.ResourceNotFoundException;
 import com.gau.booking.Response.RoomResponse;
-import com.gau.booking.Service.IBookedRoom;
 import com.gau.booking.Service.IRoom;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -22,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin("http://localhost:3006")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/rooms")
@@ -29,7 +28,6 @@ public class RoomController {
     private final IRoom roomService;
 
     @PostMapping("/add/new-room")
-    @CrossOrigin
     public ResponseEntity<RoomResponse> addNewRoom(
              @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
@@ -40,7 +38,6 @@ public class RoomController {
     }
 
     @GetMapping("/types")
-    @CrossOrigin
     public ResponseEntity<List<String>> getRoomTypes() {
         List<String> types = this.roomService.getAllRoomTypes();
         return ResponseEntity.ok(types);
@@ -54,7 +51,6 @@ public class RoomController {
     }
 
     @GetMapping("/all-rooms")
-    @CrossOrigin
     public ResponseEntity<List<RoomResponse>> getAllRooms() throws SQLException {
         List<Room> rooms = this.roomService.getAllRooms();
         List<RoomResponse> roomResponses = new ArrayList<>();
@@ -71,7 +67,6 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
-    @CrossOrigin
     public ResponseEntity<Optional<RoomResponse>> getRoomById(@PathVariable(value = "roomId") Long id) {
         Optional<Room> theRoom = roomService.getRoomById(id);
         return theRoom.map(room -> {

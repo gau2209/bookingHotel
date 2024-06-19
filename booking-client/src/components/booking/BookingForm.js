@@ -14,7 +14,7 @@ const BookingForm = () => {
     const nav = useNavigate()
 
     const [booking, setBooking] = useState({
-        guestName: "",
+        guestFullName: "",
         guestEmail: "",
         checkInDate: "",
         checkOutDate: "",
@@ -62,23 +62,7 @@ const BookingForm = () => {
         const checkInDate = moment(booking.checkInDate)
         const checkOutDate = moment(booking.checkOutDate)
         const diffInDays = checkOutDate.diff(checkInDate,"days")
-        const paymentPricePerDay = roomPrice ? roomPrice : 0
-        console.log("checkInDate: ",checkInDate,
-        "checkOutDate: ",checkOutDate,
-        "diffInDays: ",diffInDays,
-        "paymentPricePerDay: ",paymentPricePerDay,
-        "total: ",diffInDays*paymentPricePerDay
-        )
-        // console.log("checkOutDate: ",checkOutDate)
-        // console.log("diffInDays: ",diffInDays)
-        // console.log("paymentPricePerDay: ",paymentPricePerDay)
-        // console.log("total: ",diffInDays*paymentPricePerDay)
-        
-        return diffInDays * paymentPricePerDay
-        
-
-        // const day = checkOutDate - checkInDate
-        // return roomPrice * day;
+        return roomPrice * diffInDays;
     }
 
     const handleSubmit = (e) => {
@@ -94,12 +78,12 @@ const BookingForm = () => {
 
     const handleBooking = async () => {
         try {
-            const confirmMationCode = await bookRoom(roomId, booking)
+            const confirmationCode = await bookRoom(roomId, booking)
             setIsSubmited(true)
-            nav("/booking-succes", { state: { message: confirmMationCode } })
+            nav("/booking-success", { state: { message: confirmationCode } })
         } catch (error) {
-            setErrMessage(error.message)
-            nav("/booking-succes", { state: { error: errMessage } })
+            const errMessage = "This room has been booked in that days selected"
+            nav("/booking-success", { state: { error: errMessage } })
         }
     }
 
@@ -107,14 +91,14 @@ const BookingForm = () => {
         <>
             <div className="container mb-5">
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card card-body mt-5">
-                            <h4 className="card card-title">Reserve Room</h4>
+                    <div className="col-md-4">
+                        <div className="card card-body mt-5" style={{backgroundColor:"#BF9DCD"}}>
+                            <h4 className="card-title">Reserve Room</h4>
                             <Form noValidate validated={isValidated} onSubmit={handleSubmit}>
 
                                 <Form.Group >
-                                    <Form.Label htmlFor="guestName">Full Name:</Form.Label>
-                                    <FormControl required type="text" id="guestName" name="guestName" value={booking.guestName} placeholder="Enter Your full name" onChange={handleInputChange} />
+                                    <Form.Label htmlFor="guestFullName" style={{color:"#562236"}}>Full Name:</Form.Label>
+                                    <FormControl required type="text" id="guestFullName" name="guestFullName" value={booking.guestFullName} placeholder="Enter Your full name" onChange={handleInputChange} />
                                     <Form.Control.Feedback type="invalid">
                                         Please enter your full name
                                     </Form.Control.Feedback>
@@ -129,7 +113,7 @@ const BookingForm = () => {
                                 </Form.Group>
 
                                 <fieldset style={{ border: "2px" }}>
-                                    <legend>Lodging period</legend>
+                                    <legend >Lodging period</legend>
                                     <div className="row">
 
                                         <div className="col-6">

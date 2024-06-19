@@ -33,14 +33,14 @@ function RoomCarousel() {
     return (
         <>
             <section className="bg-light mb-5 mt-5 shadow">
-                <Link to={"/browse-all-rooms"} className="hote-color text-center">
+                <Link to={"/browse-all-rooms"} className="hotel-color text-center">
                     Browse all rooms
                 </Link>
                 <Container>
                     <Carousel indicators={false}>
                         {[...Array(Math.ceil(rooms.length / 4))].map((_, index) => (
                             <Carousel.Item key={index}>
-                                <Row>
+                                <Row >
                                     {rooms.slice(index * 4, index * 4 + 4).map((room) => (
                                         <Col key={room.id} className="mb-4" xs={12} md={6} lg={3}>
                                             <Card>

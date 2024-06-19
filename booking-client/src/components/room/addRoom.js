@@ -40,7 +40,7 @@ const AddRoom = () => {
             if (res !== undefined) {
                 setMessage("Adding successfully")
                 setNewRoom({ photo: "", roomType: "", roomPrice: "" })
-                setImagePreview(null)
+                setImagePreview("")
 				setErrMessage("")
             } else
                 setErrMessage("error adding room")
@@ -49,8 +49,6 @@ const AddRoom = () => {
         }
     }
 
-console.log(newRoom)
-console.log("image: ",imagePreview)
 
     return (
         <>
