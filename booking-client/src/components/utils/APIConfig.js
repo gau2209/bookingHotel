@@ -93,3 +93,30 @@ export async function bookRoom(roomId,booking){
         throw new Error(`Error booking room ${error.message}`)
     }
 }
+
+export async function getAllBooking(){
+    try {
+        const res = await api.get(`/api/booked/all-booked`)
+    return res.data
+    } catch (error) {
+        throw new Error(`Error booking room ${error.message}`)
+    }
+}
+
+export async function cancelBooking(bookingId){
+    try {
+        const res = await api.delete(`/api/booked/${bookingId}/delete`)
+        return res.data
+    } catch (error) {
+        throw new Error(`Error delete room ${error.message}`)
+    }
+}
+
+export async function validConfirmationCode(confirmationCode){
+    try {
+        const res = await api.get(`/api/booked/confirmationCode/${confirmationCode}`)
+        return res.data
+    } catch (error) {
+        throw new Error(`Error delete room ${error.message}`)
+    }
+}

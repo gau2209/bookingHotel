@@ -14,6 +14,9 @@ import CheckOut from './components/booking/Checkout';
 import BookingSuccess from"./components/booking/BookingSuccess";
 import { useEffect } from 'react';
 import GetRoom from './components/room/getRoom';
+import Bookings from './components/booking/Bookings';
+import CheckConfirmationCode from "./components/auth/confirmationCode"
+import CodeDetail from './components/auth/CodeDetails';
 
 
 function App() {
@@ -39,6 +42,11 @@ function App() {
 
             <Route path='/book-room/:roomId' element={<GetRoom/>}/>
             <Route path='/booking-success' element={<BookingSuccess/>}/>
+
+            <Route path='/existing-bookings' element={<Bookings/>}/>
+            <Route path='/checking-confirmationcode' element={<CheckConfirmationCode/>}/>
+            <Route path='/checking-confirmationcode/:confirmationCode' element={<CodeDetail/>}/>
+
 
 
 
