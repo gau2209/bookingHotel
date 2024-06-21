@@ -7,6 +7,7 @@ import com.gau.booking.Response.RoomResponse;
 import com.gau.booking.Service.IRoom;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +31,7 @@ public class RoomController {
 
     @PostMapping("/add/new-room")
     public ResponseEntity<RoomResponse> addNewRoom(
-             @RequestParam("photo") MultipartFile photo,
+            @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
             @RequestParam("roomPrice") BigDecimal roomPrice) throws SQLException, IOException {
         Room savedRoom = this.roomService.addNewRoom(photo, roomType, roomPrice);
@@ -46,8 +48,8 @@ public class RoomController {
     @DeleteMapping("/delete/room/{roomId}")
     @CrossOrigin
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
-    this.roomService.deleRoom(roomId);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        this.roomService.deleRoom(roomId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/all-rooms")
@@ -71,11 +73,33 @@ public class RoomController {
         Optional<Room> theRoom = roomService.getRoomById(id);
         return theRoom.map(room -> {
             RoomResponse roomResponse = getRoomResponse(room);
-            return  ResponseEntity.ok(Optional.of(roomResponse));
+            return ResponseEntity.ok(Optional.of(roomResponse));
         }).orElseThrow(() -> new ResourceNotFoundException("Room not found"));
     }
 
 
+    @GetMapping("/available-rooms")
+    public ResponseEntity<List<RoomResponse>> getAvailableRooms(
+            @RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam("roomType") String roomType) throws SQLException {
+        List<Room> availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for (Room room : availableRooms){
+            byte[] photoBytes = roomService.getRoomPhotoByRoomId(room.getId());
+            if (photoBytes != null && photoBytes.length > 0){
+                String photoBase64 = Base64.encodeBase64String(photoBytes);
+                RoomResponse roomResponse = getRoomResponse(room);
+                roomResponse.setPhoto(photoBase64);
+                roomResponses.add(roomResponse);
+            }
+        }
+        if(roomResponses.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.ok(roomResponses);
+        }
+    }
 
     private RoomResponse getRoomResponse(Room room) {
 //        List<BookedRoom> booking = getAllBookingByRoomId(room.getId());
@@ -92,13 +116,12 @@ public class RoomController {
                 throw new PhotoRetrievalException("Error retrieving photo");
             }
         }
-        return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(),room.isBooked(),photoBytes);
+        return new RoomResponse(room.getId(), room.getRoomType(), room.getRoomPrice(), room.isBooked(), photoBytes);
     }
 
 //    private List<BookedRoom> getAllBookingByRoomId(Long roomId) {
 //        return bookedRoomService.getAllBookingByRoomId(roomId);
 //    }
-
 
 
 }

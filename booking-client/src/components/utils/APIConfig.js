@@ -36,7 +36,7 @@ export async function addRoom(photo, roomType, roomPrice) {
 
 
 // This function gets all room types from db
-export async function getRoomTypes(){
+export async function getRoomTypes() {
     try {
         const res = await api.get("/api/rooms/types")
         return res.data
@@ -45,16 +45,16 @@ export async function getRoomTypes(){
     }
 }
 
-    export async function getAllRoom(){
-        try {
-            const res = await api.get("/api/rooms/all-rooms")
-            return res.data
-        } catch (error) {
-            throw new Error("Error fetching room")
-        }
-} 
+export async function getAllRoom() {
+    try {
+        const res = await api.get("/api/rooms/all-rooms")
+        return res.data
+    } catch (error) {
+        throw new Error("Error fetching room")
+    }
+}
 
-export async function deleteRoom(roomId){
+export async function deleteRoom(roomId) {
     try {
         const res = await api.delete(`/api/rooms/delete/room/${roomId}`)
         return res.data
@@ -63,12 +63,12 @@ export async function deleteRoom(roomId){
     }
 }
 
-export async function updateRoom(roomId,roomData){
+export async function updateRoom(roomId, roomData) {
     try {
         const formData = new FormData()
-        formData.append("roomType",roomData.roomType)
-        formData.append("roomPrice",roomData.roomPrice)
-        formData.append("photo",roomData.photo)
+        formData.append("roomType", roomData.roomType)
+        formData.append("roomPrice", roomData.roomPrice)
+        formData.append("photo", roomData.photo)
         const res = await api.put(`update/room/${roomId}`)
         return res
     } catch (error) {
@@ -76,7 +76,7 @@ export async function updateRoom(roomId,roomData){
     }
 }
 
-export async function getRoomById(roomId){
+export async function getRoomById(roomId) {
     try {
         const res = await api.get(`/api/rooms/room/${roomId}`)
         return res.data
@@ -85,25 +85,25 @@ export async function getRoomById(roomId){
     }
 }
 
-export async function bookRoom(roomId,booking){
+export async function bookRoom(roomId, booking) {
     try {
-        const res = await api.post(`/api/booked/room/${roomId}/booking`,booking)
-    return res.data
+        const res = await api.post(`/api/booked/room/${roomId}/booking`, booking)
+        return res.data
     } catch (error) {
         throw new Error(`Error booking room ${error.message}`)
     }
 }
 
-export async function getAllBooking(){
+export async function getAllBooking() {
     try {
         const res = await api.get(`/api/booked/all-booked`)
-    return res.data
+        return res.data
     } catch (error) {
         throw new Error(`Error booking room ${error.message}`)
     }
 }
 
-export async function cancelBooking(bookingId){
+export async function cancelBooking(bookingId) {
     try {
         const res = await api.delete(`/api/booked/${bookingId}/delete`)
         return res.data
@@ -112,11 +112,24 @@ export async function cancelBooking(bookingId){
     }
 }
 
-export async function validConfirmationCode(confirmationCode){
+export async function validConfirmationCode(confirmationCode) {
     try {
         const res = await api.get(`/api/booked/confirmationCode/${confirmationCode}`)
         return res.data
     } catch (error) {
-        throw new Error(`Error delete room ${error.message}`)
+        if (error.reeponse && error.response.data) {
+            throw new Error(error.response.data)
+        } else {
+            throw new Error(`User registration error : ${error.message}`)
+        }
     }
 }
+
+export async function getAvailableRooms(checkInDate, checkOutDate, roomType) {
+    const res = await api.get(
+        `/api/rooms/available-rooms?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&roomType=${roomType}`
+    )
+    return res
+}
+
+

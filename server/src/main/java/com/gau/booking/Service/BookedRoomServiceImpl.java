@@ -3,6 +3,7 @@ package com.gau.booking.Service;
 import com.gau.booking.Entity.BookedRoom;
 import com.gau.booking.Entity.Room;
 import com.gau.booking.Exception.InvalidBookingRequestException;
+import com.gau.booking.Exception.ResourceNotFoundException;
 import com.gau.booking.Repository.BookedRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class BookedRoomServiceImpl implements IBookedRoom {
 
     @Override
     public BookedRoom findByBookedConfirmationCode(String confirmationCode) {
-        return this.bookedRoomRepository.findByBookingConfirmationCode(confirmationCode);
+        return this.bookedRoomRepository.findByBookingConfirmationCode(confirmationCode)
+                .orElseThrow(()->new ResourceNotFoundException("Booking confirmation code not found: " + confirmationCode));
     }
 
     @Override
