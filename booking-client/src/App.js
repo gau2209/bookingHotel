@@ -10,12 +10,18 @@ import NavBar from './layout/navbar';
 import Footer from './layout/Footer';
 import RoomListting from './components/room/RoomListing';
 import Admin from './components/admin/Admin'
-import CheckOut from './components/booking/Checkout';
 import BookingSuccess from"./components/booking/BookingSuccess";
 import { useEffect } from 'react';
 import GetRoom from './components/room/getRoom';
 import Bookings from './components/booking/Bookings';
 import FindBooking from './components/booking/FindBooking';
+import Login from './components/auth/Login';
+import Registration from './components/auth/Registration';
+import Profile from './components/auth/Profile';
+import { AuthProvider } from './components/auth/AuthProvider';
+import CheckOut from './components/room/getRoom';
+
+
 
 
 function App() {
@@ -25,7 +31,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <main>
         <Router>
           <NavBar />
@@ -45,14 +51,16 @@ function App() {
             <Route path='/existing-bookings' element={<Bookings/>}/>
             <Route path='/find-booking' element={<FindBooking/>}/>
 
-
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/register' element={<Registration/>}/>
+            <Route path='/profile' element={<Profile/>}/>
 
 
           </Routes>
         </Router>
         <Footer />
       </main>
-    </>
+    </AuthProvider>
   );
 }
 

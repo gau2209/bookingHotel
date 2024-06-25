@@ -13,4 +13,5 @@ public interface IBookedRoom {
 
     void cancelBooking(Long bookingId);
     List<BookedRoom> getAllBookedByRoomId(Long roomId);
+    List<BookedRoom> getBookingsByUserEmail(String email);
 }

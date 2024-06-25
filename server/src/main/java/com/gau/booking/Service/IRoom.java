@@ -1,5 +1,6 @@
 package com.gau.booking.Service;
 
+import com.gau.booking.Entity.BookedRoom;
 import com.gau.booking.Entity.Room;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,4 +25,6 @@ public interface IRoom {
     Optional<Room> getRoomById(Long roomId);
 
     List<Room> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, String roomType);
+
+
 }

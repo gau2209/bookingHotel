@@ -15,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@CrossOrigin("http://localhost:3006")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/booked")
@@ -30,7 +30,7 @@ public class BookedRoomController {
     private final IRoom roomService;
 
     @GetMapping("/all-booked")
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<BookedRoomResponse>> getAllBooked() {
         List<BookedRoom> bookeds = bookedService.getAllBookedRooms();
         List<BookedRoomResponse> bookedRoomResponses = new ArrayList<>();
@@ -66,6 +66,17 @@ public class BookedRoomController {
     @DeleteMapping("/{bookingId}/delete")
     public void cancelBooking(@PathVariable Long bookingId) {
         this.bookedService.cancelBooking(bookingId);
+    }
+
+    @GetMapping("/user/{email}")
+    public ResponseEntity<List<BookedRoomResponse>> getBookingsByUserEmail(@PathVariable String email) {
+        List<BookedRoom> bookedRooms = this.bookedService.getBookingsByUserEmail(email);
+        List<BookedRoomResponse> bookedRoomResponses = new ArrayList<>();
+        for(BookedRoom bookedRoom : bookedRooms){
+            BookedRoomResponse bookedRoomResponse = getBookedResponse(bookedRoom);
+            bookedRoomResponses.add(bookedRoomResponse);
+        }
+        return ResponseEntity.ok(bookedRoomResponses);
     }
 
     private BookedRoomResponse getBookedResponse(BookedRoom booked) {

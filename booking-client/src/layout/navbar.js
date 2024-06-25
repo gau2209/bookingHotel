@@ -1,17 +1,21 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import { NavLink, Link } from "react-router-dom"
+import Logout from "../components/auth/Logout"
+import { AuthContext } from "../components/auth/AuthProvider"
 
 
 
 const NavBar = () => {
-	// const [showAccount, setShowAccount] = useState(false)
+	const [showAccount, setShowAccount] = useState(false)
+	const { user } = useContext(AuthContext)
 
-	// const handleAccountClick = () => {
-	// 	setShowAccount(!showAccount)
-	// }
 
-	// const isLoggedIn = localStorage.getItem("token")
-	// const userRole = localStorage.getItem("userRole")
+	const handleAccountClick = () => {
+		setShowAccount(!showAccount)
+	}
+
+	const isLoggedIn = localStorage.getItem("token")
+	const userRole = localStorage.getItem("userRole")
 
 	return (
 		<nav className="navbar navbar-expand-lg bg-body-tertiary px-5 shadow mt-5 sticky-top">
@@ -39,19 +43,13 @@ const NavBar = () => {
 							</NavLink>
 						</li>
 
-						{/* {isLoggedIn && userRole === "ROLE_ADMIN" && (
+						{isLoggedIn && userRole === "ROLE_ADMIN" && (
 							<li className="nav-item">
 								<NavLink className="nav-link" aria-current="page" to={"/admin"}>
 									Admin
 								</NavLink>
 							</li>
-						)} */}
-
-						<li className="nav-item">
-							<NavLink className="nav-link" aria-current="page" to={"/admin"}>
-								Admin
-							</NavLink>
-						</li>
+						)}
 
 					</ul>
 
@@ -69,10 +67,13 @@ const NavBar = () => {
 						</a>
 
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">Login</a></li>
-							<li><a class="dropdown-item" href="#">Profile</a></li>
-							<hr/>
-							<li><a class="dropdown-item" href="#">Logout</a></li>
+							{!isLoggedIn ? (
+								<li><a class="dropdown-item" href="/login">Login</a></li>
+							) : (
+								<>
+									<li><Logout /></li>
+								</>
+							)}
 						</ul>
 					</div>
 				</div>

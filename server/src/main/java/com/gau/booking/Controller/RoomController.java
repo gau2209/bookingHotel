@@ -10,6 +10,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin("http://localhost:3006")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/rooms")
@@ -30,6 +30,7 @@ public class RoomController {
     private final IRoom roomService;
 
     @PostMapping("/add/new-room")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<RoomResponse> addNewRoom(
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
@@ -46,7 +47,7 @@ public class RoomController {
     }
 
     @DeleteMapping("/delete/room/{roomId}")
-    @CrossOrigin
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
         this.roomService.deleRoom(roomId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

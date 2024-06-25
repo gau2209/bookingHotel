@@ -2,19 +2,17 @@ import axios from "axios";
 
 const SERVER = "http://localhost:9192/"
 
-export const endpoints = {
-
-}
-
 export const api = axios.create({
     baseURL: SERVER
 })
 
-
-
-// export default axios.create({
-//     baseURL:SERVER
-// })
+export const getHeader = () => {
+	const token = localStorage.getItem("token")
+	return {
+		Authorization: `Bearer ${token}`,
+		"Content-Type": "application/json"
+	}
+}
 
 
 // This function add new room 
@@ -117,10 +115,10 @@ export async function validConfirmationCode(confirmationCode) {
         const res = await api.get(`/api/booked/confirmationCode/${confirmationCode}`)
         return res.data
     } catch (error) {
-        if (error.reeponse && error.response.data) {
+        if (error.response && error.response.data) {
             throw new Error(error.response.data)
         } else {
-            throw new Error(`User registration error : ${error.message}`)
+            throw new Error(`code confirm error : ${error.message}`)
         }
     }
 }
@@ -132,4 +130,63 @@ export async function getAvailableRooms(checkInDate, checkOutDate, roomType) {
     return res
 }
 
+export async function RegisterUser(registration) {
+    try {
+        const res = await api.post(`/api/auth/register-user`, registration)
+        return res.data
+    } catch (error) {
+        if (error.response && error.response.data)
+            throw new Error(error.response.data)
+        else {
+            throw new Error(`User resgistration error : ${error.message}`)
+        }
+    }
+}
 
+export async function loginUser(login) {
+    try {
+        const res = await api.post(`/api/auth/login`, login)
+        if (res.status >= 200 && res.status < 300) {
+            return res.data
+        } else {
+            return null
+        }
+    } catch (error) {
+        console.error(error)
+        return null
+    }
+}
+
+export async function getUserProfile(email, token) {
+    try {
+        const res = await api.get(`/api/user/profile/${email}`, {
+            headers: getHeader()
+        })
+        return res.data
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export async function deleteUser(userId) {
+    try {
+        const res = await api.delete(`/api/user/delete/${userId}`, {
+            headers: getHeader()
+        })
+        return res.data
+    } catch (error) {
+        return error.message
+    }
+}
+
+export async function getBookingsByUserId(email, token) {
+    try {
+        const response = await api.get(`/api/booked/user/${email}`, {
+            headers: getHeader()
+        })
+        return response.data
+    } catch (error) {
+        console.error("Error fetching bookings:", error.message)
+        throw new Error("Failed to fetch bookings")
+    }
+}
